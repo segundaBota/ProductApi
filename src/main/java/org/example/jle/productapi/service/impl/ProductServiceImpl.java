@@ -57,6 +57,8 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity entity = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
+        if (productRepository.existsByName(product.getName()))
+            throw new ProductAlreadyExistException(product.getName());
         entity.setName(product.getName());
         entity.setPrice(product.getPrice());
         entity.setDescription(product.getDescription());

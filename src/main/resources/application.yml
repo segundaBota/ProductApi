@@ -10,11 +10,20 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     defer-datasource-initialization: true
   h2:
     console:
       enabled: true
       path: /h2-console
+  app:
+    security:
+      user:
+        name: user
+        password: user123
+      admin:
+        name: admin
+        password: admin123
+
 
 
