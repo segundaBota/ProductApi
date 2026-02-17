@@ -15,7 +15,7 @@ ProductRequest:
       format: double
       example: "49.99"
 
-Product:
+ProductDto:
   type: object
   properties:
     id:

@@ -1,4 +1,4 @@
-package org.example.jle.productapi.domain.entity;
+package org.example.jle.productapi.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,6 +18,7 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false)
     private String name;
     private String description;
     private Double price;

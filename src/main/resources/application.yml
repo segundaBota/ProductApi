@@ -16,14 +16,15 @@ spring:
     console:
       enabled: true
       path: /h2-console
-  app:
-    security:
-      user:
-        name: user
-        password: user123
-      admin:
-        name: admin
-        password: admin123
+
+app:
+  security:
+    user:
+      name: user
+      password: user123
+    admin:
+      name: admin
+      password: admin123
 
 
 

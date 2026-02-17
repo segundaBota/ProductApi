@@ -19,7 +19,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: './schemas.yaml#/Product'
+                  $ref: './schemas.yaml#/ProductDto'
         401:
           description: Not Authenticated
           content:
@@ -110,7 +110,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: './schemas.yaml#/Product'
+                $ref: './schemas.yaml#/ProductDto'
         400:
           description: Bad Request
           content:
@@ -157,12 +157,13 @@ paths:
             type: string
             format: uuid
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: './schemas.yaml#/ProductRequest'
       responses:
-        200:
+        204:
           description: Updated
         400:
           description: Bad Request

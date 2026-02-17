@@ -1,13 +1,13 @@
 package org.example.jle.productapi.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.jle.productapi.domain.entity.ProductEntity;
-import org.example.jle.productapi.domain.entity.converter.ProductEntityToProductConverter;
+import org.example.jle.productapi.repository.entity.ProductEntity;
+import org.example.jle.productapi.repository.entity.converter.ProductEntityToProductConverter;
+import org.example.jle.productapi.domain.model.Product;
 import org.example.jle.productapi.exception.ProductAlreadyExistException;
 import org.example.jle.productapi.exception.ProductNotFoundException;
 import org.example.jle.productapi.repository.ProductRepository;
 import org.example.jle.productapi.service.ProductService;
-import org.example.jle.products.model.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

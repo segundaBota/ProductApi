@@ -1,6 +1,7 @@
 package org.example.jle.productapi.service;
 
-import org.example.jle.products.model.Product;
+
+import org.example.jle.productapi.domain.model.Product;
 
 import java.util.List;
 import java.util.UUID;

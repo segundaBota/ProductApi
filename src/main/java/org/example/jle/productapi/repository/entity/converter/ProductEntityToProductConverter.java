@@ -1,7 +1,7 @@
-package org.example.jle.productapi.domain.entity.converter;
+package org.example.jle.productapi.repository.entity.converter;
 
-import org.example.jle.productapi.domain.entity.ProductEntity;
-import org.example.jle.products.model.Product;
+import org.example.jle.productapi.repository.entity.ProductEntity;
+import org.example.jle.productapi.domain.model.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

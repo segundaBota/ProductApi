@@ -44,6 +44,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
@@ -105,6 +110,7 @@
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <useJakartaEe>true</useJakartaEe>
                                 <useJSpecify>false</useJSpecify>
+                                <useBeanValidation>true</useBeanValidation>
                             </configOptions>
                         </configuration>
                     </execution>
