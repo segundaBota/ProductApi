@@ -20,20 +20,20 @@ paths:
                 type: array
                 items:
                   $ref: './schemas.yaml#/Product'
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              example:
-                badRequest:
-                  summary: Invalid request parameters
-        404:
-          description: Not Found
-          content:
-            application/json:
-              example:
-                notFound:
-                  summary: Product not found
+#        401:
+#          description: Not Authenticated
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authentication needed
+#        403:
+#          description: Unauthorized
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authorization needed
         500:
           description: Internal Server Error
           content:
@@ -65,8 +65,27 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
+#        401:
+#          description: Not Authenticated
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authentication needed
+#        403:
+#          description: Unauthorized
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authorization needed
         409:
-          description: Product already exists
+          description: Conflict
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Product already exists
         500:
           description: Internal Server Error
           content:
@@ -99,6 +118,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
+#        401:
+#          description: Not Authenticated
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authentication needed
+#        403:
+#          description: Unauthorized
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authorization needed
         404:
           description: Not Found
           content:
@@ -138,6 +171,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
+#        401:
+#          description: Not Authenticated
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authentication needed
+#        403:
+#          description: Unauthorized
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authorization needed
         404:
           description: Not Found
           content:
@@ -164,7 +211,7 @@ paths:
             format: uuid
       responses:
         204:
-          description: Removed
+          description: Product successfully deleted
         400:
           description: Bad Request
           content:
@@ -172,8 +219,22 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
+#        401:
+#          description: Not Authenticated
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authentication needed
+#        403:
+#          description: Unauthorized
+#          content:
+#            application/json:
+#              example:
+#                badRequest:
+#                  summary: Authorization needed
         404:
-          description: Not Found
+          description: Product Not Found
           content:
             application/json:
               example:
@@ -186,3 +247,12 @@ paths:
               example:
                 internalServerError:
                   summary: Internal server error
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+security:
+  - basicAuth: [ ]

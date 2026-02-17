@@ -3,10 +3,13 @@ package org.example.jle.productapi.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.jle.productapi.domain.entity.ProductEntity;
 import org.example.jle.productapi.domain.entity.converter.ProductEntityToProductConverter;
+import org.example.jle.productapi.exception.ProductAlreadyExistException;
+import org.example.jle.productapi.exception.ProductNotFoundException;
 import org.example.jle.productapi.repository.ProductRepository;
 import org.example.jle.productapi.service.ProductService;
 import org.example.jle.products.model.Product;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,21 +32,45 @@ public class ProductServiceImpl implements ProductService {
     public Product getProductById(UUID id) {
         return productRepository.findById(id)
                 .map(converter::convert)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
+    @Transactional
     public UUID createProduct(Product product) {
-        return null;
+
+        if (productRepository.existsByName(product.getName())) {
+            throw new ProductAlreadyExistException(product.getName());
+        }
+        ProductEntity entity = ProductEntity.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .build();
+
+        return productRepository.save(entity).getId();
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return null;
+    @Transactional
+    public Product updateProduct(UUID id, Product product) {
+        ProductEntity entity = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        entity.setName(product.getName());
+        entity.setPrice(product.getPrice());
+        entity.setDescription(product.getDescription());
+
+        return converter.convert(productRepository.save(entity));
+
     }
 
     @Override
+    @Transactional
     public void deleteProductById(UUID id) {
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
         productRepository.deleteById(id);
     }
 }

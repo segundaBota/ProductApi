@@ -13,7 +13,7 @@ public interface ProductService {
 
     public UUID createProduct(Product productRequest);
 
-    public Product updateProduct(Product product);
+    public Product updateProduct(UUID id,Product product);
 
     public void deleteProductById(UUID id);
 }
