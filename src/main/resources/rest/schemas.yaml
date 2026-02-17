@@ -6,11 +6,14 @@ ProductRequest:
   properties:
     name:
       type: string
+      example: "Keyboard"
     description:
       type: string
+      example: "Usb keyboard for a laptop"
     price:
       type: number
       format: double
+      example: "49.99"
 
 Product:
   type: object
@@ -18,13 +21,17 @@ Product:
     id:
       type: string
       format: uuid
+      example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     name:
       type: string
+      example: "Keyboard"
     description:
       type: string
+      example: "Usb keyboard for a laptop"
     price:
       type: number
       format: double
+      example: 49.99
 
 ProductIdResponse:
   type: object
@@ -32,3 +39,4 @@ ProductIdResponse:
     id:
       type: string
       format: uuid
+      example: "3d4062cf-980f-4667-b56e-4b055cfafca9"

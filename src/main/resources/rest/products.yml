@@ -20,20 +20,20 @@ paths:
                 type: array
                 items:
                   $ref: './schemas.yaml#/Product'
-#        401:
-#          description: Not Authenticated
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authentication needed
-#        403:
-#          description: Unauthorized
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authorization needed
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
         500:
           description: Internal Server Error
           content:
@@ -65,20 +65,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
-#        401:
-#          description: Not Authenticated
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authentication needed
-#        403:
-#          description: Unauthorized
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authorization needed
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
         409:
           description: Conflict
           content:
@@ -118,20 +118,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
-#        401:
-#          description: Not Authenticated
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authentication needed
-#        403:
-#          description: Unauthorized
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authorization needed
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
         404:
           description: Not Found
           content:
@@ -171,20 +171,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
-#        401:
-#          description: Not Authenticated
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authentication needed
-#        403:
-#          description: Unauthorized
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authorization needed
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
         404:
           description: Not Found
           content:
@@ -219,20 +219,20 @@ paths:
               example:
                 badRequest:
                   summary: Invalid request parameters
-#        401:
-#          description: Not Authenticated
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authentication needed
-#        403:
-#          description: Unauthorized
-#          content:
-#            application/json:
-#              example:
-#                badRequest:
-#                  summary: Authorization needed
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
         404:
           description: Product Not Found
           content:

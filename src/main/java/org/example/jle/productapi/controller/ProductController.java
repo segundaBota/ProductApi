@@ -23,33 +23,33 @@ public class ProductController implements ProductsApi {
     private final RestProductConverter productConverter;
 
     @Override
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<Product>> getProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @Override
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Product> getProductById(UUID id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductIdResponse> createProduct(ProductRequest productRequest) {
         UUID id = productService.createProduct(productConverter.convertToProduct(productRequest));
         return ResponseEntity.status(HttpStatus.CREATED).body(productConverter.convertToProductIdResponse(id));
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateProduct(UUID id, ProductRequest productRequest) {
         productService.updateProduct(id, productConverter.convertToProduct(productRequest));
         return ResponseEntity.ok().build();
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProduct(UUID id) {
         productService.deleteProductById(id);
         return ResponseEntity.noContent().build();
