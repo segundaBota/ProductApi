@@ -41,6 +41,7 @@ public class ProductControllerTest {
 
     private static final String PRODUCTS_ENDPOINT = "/products";
     private static final String PRODUCTS_ENDPOINT_ID = "/products/{id}";
+    private static final String PRODUCTS_SEARCH_ENDPOINT = "/products/search";
     private static final UUID PRODUCT_ID = UUID.randomUUID();
     private static final String PRODUCT_NAME = "ProductName";
     private static final String BODY = "{\"name\": \"NewProductName\", \"price\": 5.0}";
@@ -335,6 +336,72 @@ public class ProductControllerTest {
                     .when(productService).deleteProductById(PRODUCT_ID);
 
             mockMvc.perform(delete(PRODUCTS_ENDPOINT_ID, PRODUCT_ID))
+                    .andExpect(status().isInternalServerError());
+        }
+    }
+
+    @Nested
+    @DisplayName("When search product")
+    class WhenSearchProduct {
+
+        @Test
+        @DisplayName("When search is successful then return 200 OK")
+        @WithMockUser(roles = "USER")
+        void whenSearchSuccessfulThenReturn200() throws Exception {
+            // Given
+            Product product = Product.builder().id(PRODUCT_ID).name(PRODUCT_NAME).build();
+            ProductDto productDto = new ProductDto();
+            productDto.setId(PRODUCT_ID);
+            productDto.setName(PRODUCT_NAME);
+
+            when(productService.searchProducts(any())).thenReturn(List.of(product));
+            when(productConverter.convertToProductDto(any())).thenReturn(productDto);
+
+            // When & Then
+            mockMvc.perform(get(PRODUCTS_SEARCH_ENDPOINT )
+                            .param("name", PRODUCT_NAME)
+                            .param("price", "99.99")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(1))
+                    .andExpect(jsonPath("$[0].name").value(PRODUCT_NAME));
+        }
+
+        @Test
+        @DisplayName("When price format is invalid then return 400 Bad Request")
+        @WithMockUser(roles = "USER")
+        void whenPriceFormatIsInvalidThenReturn400() throws Exception {
+            mockMvc.perform(get(PRODUCTS_SEARCH_ENDPOINT )
+                            .param("price", "notANumber")
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("When user is not authenticated then return 401 Unauthorized")
+        void whenUserIsNotAuthenticatedThenReturn401() throws Exception {
+            mockMvc.perform(get(PRODUCTS_SEARCH_ENDPOINT )
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("When user has no USER role then return 403 Forbidden")
+        @WithMockUser(roles = "GUEST")
+        void whenUserHasNoUserRoleThenReturn403() throws Exception {
+            mockMvc.perform(get(PRODUCTS_SEARCH_ENDPOINT )
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DisplayName("When service throws exception then return 500 Internal Server Error")
+        @WithMockUser(roles = "USER")
+        void whenServiceThrowsExceptionThenReturn500() throws Exception {
+            when(productService.searchProducts(any())).thenThrow(new RuntimeException("Search failed"));
+
+            mockMvc.perform(get(PRODUCTS_SEARCH_ENDPOINT )
+                            .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError());
         }
     }

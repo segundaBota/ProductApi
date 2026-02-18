@@ -13,13 +13,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Validated
 public class ProductController implements ProductsApi {
+
+    private static final String PARAM_FILTER_NAME = "name";
+    private static final String PARAM_FILTER_DESCRIPTION = "description";
+    private static final String PARAM_FILTER_PRICE = "price";
 
     private final ProductService productService;
     private final RestProductConverter productConverter;
@@ -56,5 +62,21 @@ public class ProductController implements ProductsApi {
     public ResponseEntity<Void> deleteProduct(UUID id) {
         productService.deleteProductById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<ProductDto>> searchProducts(String name, String description, Double price) {
+        Map<String, String> filters = new HashMap<>();
+
+        if (name != null) filters.put(PARAM_FILTER_NAME, name);
+        if (description != null) filters.put(PARAM_FILTER_DESCRIPTION, description);
+        if (price != null) filters.put(PARAM_FILTER_PRICE, price.toString());
+
+        return ResponseEntity.ok(
+                productService.searchProducts(filters).stream()
+                        .map(productConverter::convertToProductDto)
+                        .toList()
+        );
     }
 }

@@ -248,6 +248,66 @@ paths:
               example:
                 internalServerError:
                   summary: Internal server error
+  /products/search:
+    get:
+      tags:
+        - products
+      summary: Dynamic product search
+      operationId: searchProducts
+      parameters:
+        - name: name
+          in: query
+          description: Filter by name
+          schema:
+            type: string
+        - name: description
+          in: query
+          description: Filter by description
+          schema:
+            type: string
+        - name: price
+          in: query
+          description: Filter by price
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: List of filtered products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: './schemas.yaml#/ProductDto'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Invalid request parameters
+        401:
+          description: Not Authenticated
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authentication needed
+        403:
+          description: Unauthorized
+          content:
+            application/json:
+              example:
+                badRequest:
+                  summary: Authorization needed
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                internalServerError:
+                  summary: Internal server error
 
 components:
   securitySchemes:

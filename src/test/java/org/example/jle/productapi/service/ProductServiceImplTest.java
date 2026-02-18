@@ -15,10 +15,9 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -82,7 +81,7 @@ public class ProductServiceImplTest {
 
     @Test
     void whenCreateProduct_thenReturnId() {
-        when(productRepository.existsByName(NAME_1)).thenReturn(false);
+        when(productRepository.findByName(NAME_1)).thenReturn(Optional.empty());
         when(productRepository.save(any())).thenReturn(buildMockProductEntityList().getFirst());
 
         UUID id = productService.createProduct(buildProduct());
@@ -102,7 +101,7 @@ public class ProductServiceImplTest {
                 .price(expectedPriceWithTaxes)
                 .build();
 
-        when(productRepository.existsByName(NAME_1)).thenReturn(false);
+        when(productRepository.findByName(NAME_1)).thenReturn(Optional.empty());
         when(productRepository.save(any(ProductEntity.class))).thenReturn(entityToReturn);
 
         productService.createProduct(productToCreate);
@@ -116,7 +115,7 @@ public class ProductServiceImplTest {
 
     @Test
     void whenCreateExistingProduct_thenThrowException() {
-        when(productRepository.existsByName(any())).thenReturn(true);
+        when(productRepository.findByName(any())).thenReturn(Optional.of(buildMockProductEntityList().getFirst()));
 
         assertThrows(ProductAlreadyExistException.class,
                 () -> productService.createProduct(buildProduct()));
@@ -130,6 +129,7 @@ public class ProductServiceImplTest {
         when(productRepository.save(any())).thenReturn(productEntity);
 
         Product updatedProduct = productService.updateProduct(UUID_1, Product.builder().name(NAME_2).price(PRICE_2).description(DESCRIPTION_2).build());
+
         assertEquals(UUID_1, updatedProduct.getId());
         assertEquals(NAME_2, updatedProduct.getName());
         assertEquals(DESCRIPTION_2, updatedProduct.getDescription());
@@ -159,6 +159,49 @@ public class ProductServiceImplTest {
         when(productRepository.existsById(any())).thenReturn(false);
 
         assertThrows(ProductNotFoundException.class, () -> productService.deleteProductById(UUID_1));
+    }
+
+    @Test
+    void whenSearchProductsWithFilters_thenReturnFilteredList() {
+        Map<String, String> filters = new HashMap<>();
+        filters.put("name", NAME_1);
+        filters.put("price", PRICE_1.toString());
+        List<ProductEntity> entities = List.of(buildMockProductEntityList().getFirst());
+        when(productRepository.findAll(any(Specification.class)))
+                .thenReturn(entities);
+
+        List<Product> result = productService.searchProducts(filters);
+
+        assertEquals(1, result.size());
+        assertEquals(NAME_1, result.getFirst().getName());
+        assertEquals(PRICE_1, result.getFirst().getPrice());
+        verify(productRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    void whenSearchProductsWithEmptyFilters_thenReturnAll() {
+        Map<String, String> emptyFilters = new HashMap<>();
+
+        when(productRepository.findAll(any(Specification.class)))
+                .thenReturn(buildMockProductEntityList());
+
+        List<Product> result = productService.searchProducts(emptyFilters);
+
+        assertEquals(2, result.size());
+        verify(productRepository).findAll(any(Specification.class));
+    }
+
+    @Test
+    void whenSearchProductsReturnsEmpty_thenReturnEmptyList() {
+        Map<String, String> filters = Map.of("name", "NonExistent");
+
+        when(productRepository.findAll(any(Specification.class)))
+                .thenReturn(List.of());
+
+        List<Product> result = productService.searchProducts(filters);
+
+        assertEquals(0, result.size());
+        verify(productRepository).findAll(any(Specification.class));
     }
 
     private List<ProductEntity> buildMockProductEntityList() {

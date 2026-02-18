@@ -7,12 +7,15 @@ import org.example.jle.productapi.exception.ProductNotFoundException;
 import org.example.jle.productapi.repository.ProductRepository;
 import org.example.jle.productapi.repository.entity.ProductEntity;
 import org.example.jle.productapi.repository.entity.converter.ProductEntityToProductConverter;
+import org.example.jle.productapi.repository.specification.ProductSpecification;
 import org.example.jle.productapi.service.ProductService;
 import org.example.jle.productapi.service.TaxCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -40,34 +43,34 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public UUID createProduct(Product product) {
+        productRepository.findByName(product.getName())
+                .ifPresent(p -> {
+                    throw new ProductAlreadyExistException(product.getName());
+                });
 
-        if (productRepository.existsByName(product.getName())) {
-            throw new ProductAlreadyExistException(product.getName());
-        }
-        ProductEntity entity = ProductEntity.builder()
-                .name(product.getName())
-                .price(calculatePriceWithTaxes(product.getPrice()))
-                .description(product.getDescription())
-                .build();
-
-        return productRepository.save(entity).getId();
+        return Optional.of(product)
+                .map(this::applyTaxes)
+                .map(converter::convertToEntity)
+                .map(productRepository::save)
+                .map(ProductEntity::getId)
+                .orElseThrow();
     }
 
     @Override
     @Transactional
     public Product updateProduct(UUID id, Product product) {
-        ProductEntity entity = productRepository.findById(id)
+        ProductEntity updatedEntity = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
 
-        if (productRepository.existsByNameAndIdNot(product.getName(), id)) {
-            throw new ProductAlreadyExistException(product.getName());
-        }
-        entity.setName(product.getName());
-        entity.setPrice(product.getPrice());
-        entity.setDescription(product.getDescription());
+        Optional.of(product)
+                .filter(p -> productRepository.existsByNameAndIdNot(p.getName(), id))
+                .ifPresent(p -> {
+                    throw new ProductAlreadyExistException(p.getName());
+                });
 
-        return converter.convert(productRepository.save(entity));
+        applyUpdates(updatedEntity, product);
 
+        return converter.convert(productRepository.save(updatedEntity));
     }
 
     @Override
@@ -79,7 +82,27 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
+    @Override
+    public List<Product> searchProducts(Map<String, String> filters) {
+        return productRepository.findAll(ProductSpecification.filterBy(filters))
+                .stream()
+                .map(converter::convert)
+                .toList();
+    }
+
+    private Product applyTaxes(Product product) {
+        return product.toBuilder()
+                .price(calculatePriceWithTaxes(product.getPrice()))
+                .build();
+    }
+
     private Double calculatePriceWithTaxes(Double price) {
         return price + taxCalculator.calculateTax(price);
+    }
+
+    private void applyUpdates(ProductEntity entity, Product product) {
+        entity.setName(product.getName());
+        entity.setPrice(product.getPrice());
+        entity.setDescription(product.getDescription());
     }
 }
