@@ -126,7 +126,7 @@ public class ProductServiceImplTest {
     void whenUpdateProduct_thenReturnUpdatedProduct() {
         ProductEntity productEntity = buildMockProductEntityList().getFirst();
         when(productRepository.findById(UUID_1)).thenReturn(Optional.of(productEntity));
-        when(productRepository.existsByName(any())).thenReturn(false);
+        when(productRepository.existsByNameAndIdNot(any(), any())).thenReturn(false);
         when(productRepository.save(any())).thenReturn(productEntity);
 
         Product updatedProduct = productService.updateProduct(UUID_1, Product.builder().name(NAME_2).price(PRICE_2).description(DESCRIPTION_2).build());
@@ -141,6 +141,16 @@ public class ProductServiceImplTest {
         when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class,
+                () -> productService.updateProduct(UUID_1, Product.builder().name(NAME_2).price(PRICE_2).description(DESCRIPTION_2).build()));
+    }
+
+    @Test
+    void whenUpdateNonExistingProductWithExistingName_thenThrowException() {
+        ProductEntity productEntity = buildMockProductEntityList().getFirst();
+        when(productRepository.findById(UUID_1)).thenReturn(Optional.of(productEntity));
+        when(productRepository.existsByNameAndIdNot(any(), any())).thenReturn(true);
+
+        assertThrows(ProductAlreadyExistException.class,
                 () -> productService.updateProduct(UUID_1, Product.builder().name(NAME_2).price(PRICE_2).description(DESCRIPTION_2).build()));
     }
 
