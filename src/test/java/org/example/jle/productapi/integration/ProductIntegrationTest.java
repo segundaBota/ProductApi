@@ -79,20 +79,34 @@ public class ProductIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "USER"})
     void testUpdateProduct() throws Exception {
+        String updatedName = "Updated Integration Name";
+        String updatedDesc = "Updated Description";
+        Double updatedPrice = 75.50;
+
         String json = """
                 {
-                  "name": "Updated Name",
-                  "description": "Updated Desc",
-                  "price": 75.0
+                  "name": "%s",
+                  "description": "%s",
+                  "price": %s
                 }
-                """;
+                """.formatted(updatedName, updatedDesc, updatedPrice);
+
 
         mockMvc.perform(put("/products/{id}", savedId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/products/{id}", savedId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(savedId.toString()))
+                .andExpect(jsonPath("$.name").value(updatedName))
+                .andExpect(jsonPath("$.description").value(updatedDesc))
+                .andExpect(jsonPath("$.price").value(updatedPrice));
+
     }
 
     @Test
