@@ -9,15 +9,15 @@ import java.util.UUID;
 
 public interface ProductService {
 
-    public List<Product> getAllProducts();
+    List<Product> getAllProducts();
 
-    public Product getProductById(UUID id);
+    Product getProductById(UUID id);
 
-    public UUID createProduct(Product productRequest);
+    UUID createProduct(Product productRequest);
 
-    public Product updateProduct(UUID id,Product product);
+    Product updateProduct(UUID id, Product product);
 
-    public void deleteProductById(UUID id);
+    void deleteProductById(UUID id);
 
     List<Product> searchProducts(Map<String, String> filters);
 }

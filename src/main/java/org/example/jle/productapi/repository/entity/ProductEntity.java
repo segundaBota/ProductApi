@@ -3,7 +3,6 @@ package org.example.jle.productapi.repository.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
