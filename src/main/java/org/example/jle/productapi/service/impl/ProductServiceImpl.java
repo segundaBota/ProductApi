@@ -1,13 +1,14 @@
 package org.example.jle.productapi.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.jle.productapi.repository.entity.ProductEntity;
-import org.example.jle.productapi.repository.entity.converter.ProductEntityToProductConverter;
 import org.example.jle.productapi.domain.model.Product;
 import org.example.jle.productapi.exception.ProductAlreadyExistException;
 import org.example.jle.productapi.exception.ProductNotFoundException;
 import org.example.jle.productapi.repository.ProductRepository;
+import org.example.jle.productapi.repository.entity.ProductEntity;
+import org.example.jle.productapi.repository.entity.converter.ProductEntityToProductConverter;
 import org.example.jle.productapi.service.ProductService;
+import org.example.jle.productapi.service.TaxCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductEntityToProductConverter converter;
+    private final TaxCalculator taxCalculator;
 
     @Override
     public List<Product> getAllProducts() {
@@ -44,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
         }
         ProductEntity entity = ProductEntity.builder()
                 .name(product.getName())
-                .price(product.getPrice())
+                .price(calculatePriceWithTaxes(product.getPrice()))
                 .description(product.getDescription())
                 .build();
 
@@ -74,5 +76,9 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductNotFoundException(id);
         }
         productRepository.deleteById(id);
+    }
+
+    private Double calculatePriceWithTaxes(Double price) {
+        return price + taxCalculator.calculateTax(price);
     }
 }

@@ -54,9 +54,6 @@ public class ProductControllerTest {
     @MockitoBean
     private RestProductConverter productConverter;
 
-    @Autowired
-    private com.fasterxml.jackson.databind.ObjectMapper objectMapper;
-
     @Nested
     @DisplayName("When get all products")
     class WhenGetAllProducts {

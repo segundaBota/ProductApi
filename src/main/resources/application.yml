@@ -25,6 +25,7 @@ app:
     admin:
       name: admin
       password: admin123
-
+  tax:
+    type: IVA
 
 
